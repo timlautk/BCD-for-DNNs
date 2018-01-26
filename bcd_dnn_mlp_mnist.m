@@ -82,7 +82,7 @@ W3 = 0.01*randn(d3,d2); b3 = 0.1*ones(d3,1);
 % W3 = zeros(d3,d2); b3 = zeros(d3,1); 
 
 % V = 0.01*sprand(d4,d3,0.1); c = zeros(d4,1); 
-V = 0.01*randn(d4,d3); c = 0.1*ones(dL,1); 
+V = 0.01*randn(d4,d3); c = 0.1*ones(d4,1); 
 % V = zeros(d4,d3); c = zeros(d4,1);
 
 
@@ -118,6 +118,7 @@ beta8 = beta; beta9 = beta; beta10 = beta;
 
 t = 0.1;
 
+s = 10; % number of mini-batches
 % niter = input('Number of iterations: ');
 niter = 30;
 loss1 = zeros(niter,1);
@@ -172,7 +173,7 @@ for k = 1:niter
     % adaptive momentum and update
     [a2,beta4] = Adaptivea1_3(gamma2,gamma3,a3,a1,a2,a2star,W2,W3,b2+u2,b3,beta4,t);
     
-%     % update u2
+    % update u2
     u2 = a2-W2*a1-b2;
 
     
@@ -192,7 +193,6 @@ for k = 1:niter
     
     % update W1 and b1 (1st layer)
     [W1star,b1star] = updateWb_2(a1,x_train,u1,W1,b1,alpha7,gamma1,lambda);
-
     % adaptive momentum and update
     [W1,b1,beta7] = AdaptiveWb1_3(x_train,a1,W1,W1star,b1,b1star,beta7,t);
      

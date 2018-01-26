@@ -71,7 +71,7 @@ y_test_one_hot = ind2vec((y_test'+1));
 
 %% Main Algorithm 1 (Proximal Point)
 % Initialization of parameters/hyperparameters
-d0 = d; d1 = d; d2 = d; d3 = d; 
+d0 = d; d1 = 2048; d2 = d; d3 = 2048; 
 % d4 = d; d5 = d; d6 = d;
 dL = K; % Layers: input + 3 hidden + output
 

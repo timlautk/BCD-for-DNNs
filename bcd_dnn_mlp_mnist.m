@@ -118,7 +118,6 @@ beta8 = beta; beta9 = beta; beta10 = beta;
 
 t = 0.1;
 
-s = 10; % number of mini-batches
 % niter = input('Number of iterations: ');
 niter = 30;
 loss1 = zeros(niter,1);

@@ -49,7 +49,6 @@ y_test = mnist.test.labels; % labels
 
 X_test = [y_test';x_test];
 [~, col_test] = find(X_test(1,:) < num_classes);
-% [~, col_test] = find(X_test(1,:) == 5 | X_test(1,:) == 6);
 X_test = X_test(:,col_test);
 [~,N_test] = size(X_test);
 X_test = X_test(:,randperm(N_test,N_test));

@@ -276,7 +276,7 @@ for k = 1:niter
     
     time1(k) = toc;
     loss1(k) = gamma4/2*norm(V*a3+c-y_one_hot,'fro')^2;
-    loss2(k) = loss1(k)+lambda*norm(V,'fro')^2+gamma1/2*norm(W1*x_train+b1-a1+u1,'fro')^2+lambda*norm(W1,'fro')^2+gamma2/2*norm(W2*a1+b2+x_train-a2+u2,'fro')^2+lambda*norm(W3,'fro')^2+gamma3/2*norm(W3*a2+b3-a3+u3,'fro')^2+lambda*norm(W3,'fro')^2;
+    loss2(k) = loss1(k)+lambda*norm(V,'fro')^2+gamma1/2*norm(W1*x_train+b1-a1+u1,'fro')^2+lambda*norm(W1,'fro')^2+gamma2/2*norm(W2*a1+b2+x_train-a2+u2,'fro')^2+lambda*norm(W2,'fro')^2+gamma3/2*norm(W3*a2+b3-a3+u3,'fro')^2+lambda*norm(W3,'fro')^2;
 %     loss1(k) = gamma4/2*norm(V*a4+c-y_one_hot,'fro')^2;
 %     loss1(k) = cross_entropy(y_one_hot,a3,V,c);
 %     loss2(k) = loss2(k)+gamma4/2*norm(W4*a3+b4-a4+u4,'fro')^2+lambda*norm(W4,'fro')^2;

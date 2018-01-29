@@ -1,1 +1,1 @@
-# Back Propagation (Backprop) Experiments using Keras with TensorFlow Backend
+# Backprop Experiments using Keras

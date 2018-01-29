@@ -4,4 +4,4 @@ MNIST Dataset Test Accuracy after 100 epochs: 94.63% (Residual Connection; mean 
 
 CIFAR-10 Dataset Test Accuracy after 100 epochs: 46.36% (Residual Connection; mean squared loss), 47.03% (MLP; mean squared loss), 54.5% (MLP; cross-entropy loss) 
 
-Other Optimizers such as RMSprop, Adagrad, Adadelta, Adam, Adamax, Nesterov Adam, or those available in native TensorFlow can also be used for experiments. (Left for future work)
+Other optimizers such as RMSprop, Adagrad, Adadelta, Adam, Adamax, Nesterov Adam, or those available in native TensorFlow can also be used for experiments. (Left for future work)

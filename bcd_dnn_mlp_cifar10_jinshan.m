@@ -164,7 +164,7 @@ alpha8 = alpha; % alpha9 = alpha; alpha10 = alpha;
 % t = 0.1;
 
 % niter = input('Number of iterations: ');
-niter = 10;
+niter = 50;
 loss1 = zeros(niter,1);
 loss2 = zeros(niter,1);
 layer1 = zeros(niter,1);

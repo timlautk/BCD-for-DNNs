@@ -1,7 +1,6 @@
 %% Block Coordinate Descent (BCD) Algorithm for Training DNNs (3-layer MLP) (CIFAR-10 dataset)
 %%% 5 runs, seed = 10, 20, 30, 40, 50; validation accuracies: 
 %%% (alpha = 5) 0.4499, 0.4519, 0.4484, 0.4496, 0.4489
-%%% (alpha = 10) 0.44, 0.45, 0.44, 0.44, 0.44
 clear all
 close all
 clc
@@ -151,8 +150,8 @@ rho = gamma;
 rho1 = rho; rho2 = rho; rho3 = rho; rho4 = rho;
 
 % alpha1 = 10; 
-alpha1 = 10; 
-alpha = 10;
+alpha1 = 5; 
+alpha = 5;
 alpha2 = alpha; alpha3 = alpha; alpha4 = alpha; 
 alpha5 = alpha; alpha6 = alpha; alpha7 = alpha; 
 alpha8 = alpha; % alpha9 = alpha; alpha10 = alpha; 
@@ -293,7 +292,8 @@ fprintf('sum of inter-layer loss: %f\n',loss2(k)-loss1(k))
 figure;
 graph1 = semilogy(1:niter,loss1,1:niter,loss2);
 set(graph1,'LineWidth',1.5);
-legend('Squared loss','Total loss');
+l1 = legend('Squared loss','Total loss');
+% l1.Interpreter = 'latex';
 ylabel('Loss')
 xlabel('Epochs')
 title('Three-layer MLP')
@@ -302,7 +302,8 @@ figure;
 graph2 = semilogy(1:niter,accuracy_train,1:niter,accuracy_test);
 set(graph2,'LineWidth',1.5);
 % ylim([0.85 1])
-legend('Training accuracy','Validation accuracy','Location','southeast');
+l2 = legend('Training accuracy','Validation accuracy','Location','southeast');
+% l2.Interpreter = 'latex';
 ylabel('Accuracy')
 xlabel('Epochs')
 title('Three-layer MLP')
@@ -310,11 +311,11 @@ title('Three-layer MLP')
 figure;
 graph3 = semilogy(1:niter,layer1,1:niter,layer2,1:niter,layer3,1:niter,layer4);
 set(graph3,'LineWidth',1.5);
-% ylim([0.85 1])
-legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
+l3 = legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
+l3.Interpreter = 'latex';
 ylabel('$\|W^k-W^{k-1}\|_F/\|W^{k-1}\|_F$','interpreter','latex')
-xlabel('Epochs')
-title('Three-layer MLP')
+xlabel('Epochs','interpreter','latex')
+title('Speed of learning: Three-layer MLP','interpreter','latex')
 
 %% Training error
 switch indicator

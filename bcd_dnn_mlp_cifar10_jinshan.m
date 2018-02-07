@@ -1,4 +1,7 @@
 %% Block Coordinate Descent (BCD) Algorithm for Training DNNs (3-layer MLP) (CIFAR-10 dataset)
+%%% 5 runs, seed = 10, 20, 30, 40, 50; validation accuracies: 
+%%% (alpha = 5) 0.4499, 0.4519, 0.4484, 0.4496, 0.4489
+%%% (alpha = 10) 0.44, 0.45, 0.44, 0.44, 0.44
 clear all
 close all
 clc
@@ -8,7 +11,7 @@ addpath Algorithms Tools
 disp("MLP with Three Hidden Layers using the CIFAR-10 dataset (Jinshan's Algorithm)")
 
 rng('default');
-seed = 20;
+seed = 40;
 rng(seed);
 fprintf('Seed = %d \n', seed)
 
@@ -115,8 +118,6 @@ W3 = 0.01*randn(d3,d2); b3 = 0.1*ones(d3,1);
 W4 = 0.01*randn(d4,d3); b4 = 0.1*ones(d4,1); 
 
 
-
-
 indicator = 1; % 0 = sign; 1 = ReLU; 2 = tanh; 3 = sigmoid
 
 switch indicator
@@ -143,15 +144,15 @@ switch indicator
 end
 
 % lambda = 0;
-gamma = 0.5; 
+gamma = 0.75; %0.7
 gamma1 = gamma; gamma2 = gamma; gamma3 = gamma; gamma4 = gamma;
 
 rho = gamma;
 rho1 = rho; rho2 = rho; rho3 = rho; rho4 = rho;
 
 % alpha1 = 10; 
-alpha1 = 1e-6; 
-alpha = 1e-6;
+alpha1 = 10; 
+alpha = 10;
 alpha2 = alpha; alpha3 = alpha; alpha4 = alpha; 
 alpha5 = alpha; alpha6 = alpha; alpha7 = alpha; 
 alpha8 = alpha; % alpha9 = alpha; alpha10 = alpha; 
@@ -164,9 +165,13 @@ alpha8 = alpha; % alpha9 = alpha; alpha10 = alpha;
 % t = 0.1;
 
 % niter = input('Number of iterations: ');
-niter = 50;
+niter = 10;
 loss1 = zeros(niter,1);
 loss2 = zeros(niter,1);
+layer1 = zeros(niter,1);
+layer2 = zeros(niter,1);
+layer3 = zeros(niter,1);
+layer4 = zeros(niter,1);
 accuracy_train = zeros(niter,1);
 accuracy_test = zeros(niter,1);
 time1 = zeros(niter,1);
@@ -174,6 +179,9 @@ time1 = zeros(niter,1);
 % Iterations
 for k = 1:niter
     tic
+    
+    % record previous W1, W2, W3, W4
+    W10 = W1; W20 = W2; W30 = W3; W40 = W4;
     
     % update V4
     V4 = (y_one_hot + gamma4*U4 + alpha1*V4)/(1+gamma4+alpha1);
@@ -264,11 +272,15 @@ for k = 1:niter
     loss1(k) = gamma4/2*norm(V4-y_one_hot,'fro')^2;
     loss2(k) = loss1(k)+rho1/2*norm(W1*x_train+b1-U1,'fro')^2+rho2/2*norm(W2*V1+b2-U2,'fro')^2+rho3/2*norm(W3*V2+b3-U3,'fro')^2+rho4/2*norm(W4*V3+b4-U4,'fro')^2;
     loss2(k) = loss2(k)+gamma1/2*norm(V1-max(U1,0),'fro')^2+gamma2/2*norm(V2-max(U2,0),'fro')^2+gamma3/2*norm(V3-max(U3,0),'fro')^2+gamma4/2*norm(V4-U4,'fro')^2;
+    layer1(k) = norm(W1-W10,'fro')/norm(W10,'fro');
+    layer2(k) = norm(W2-W20,'fro')/norm(W20,'fro');
+    layer3(k) = norm(W3-W30,'fro')/norm(W30,'fro');
+    layer4(k) = norm(W4-W40,'fro')/norm(W40,'fro');
     accuracy_train(k) = sum(pred'-1 == y_train)/N;
     accuracy_test(k) = sum(pred_test'-1 == y_test)/N_test;
     time1(k) = toc;
-    fprintf('epoch: %d, squared loss: %f, total loss: %f, training accuracy: %f, validation accuracy: %f, time: %f\n',k,loss1(k),loss2(k),accuracy_train(k),accuracy_test(k),time1(k));
-  
+    fprintf('epoch: %d, squared loss: %f, total loss: %f, training accuracy: %f, validation accuracy: %f\n',k,loss1(k),loss2(k),accuracy_train(k),accuracy_test(k))
+    fprintf('speed of learning: HL1: %f, HL2: %f, HL3: %f, OL: %f, time: %f\n',layer1(k),layer2(k),layer3(k),layer4(k),time1(k))
 end
 
 
@@ -284,7 +296,7 @@ set(graph1,'LineWidth',1.5);
 legend('Squared loss','Total loss');
 ylabel('Loss')
 xlabel('Epochs')
-title('Three-layer MLP (CIFAR-10)')
+title('Three-layer MLP')
 
 figure;
 graph2 = semilogy(1:niter,accuracy_train,1:niter,accuracy_test);
@@ -293,7 +305,16 @@ set(graph2,'LineWidth',1.5);
 legend('Training accuracy','Validation accuracy','Location','southeast');
 ylabel('Accuracy')
 xlabel('Epochs')
-title('Three-layer MLP (CIFAR-10)')
+title('Three-layer MLP')
+
+figure;
+graph3 = semilogy(1:niter,layer1,1:niter,layer2,1:niter,layer3,1:niter,layer4);
+set(graph3,'LineWidth',1.5);
+% ylim([0.85 1])
+legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
+ylabel('$\|W^k-W^{k-1}\|_F/\|W^{k-1}\|_F$','interpreter','latex')
+xlabel('Epochs')
+title('Three-layer MLP')
 
 %% Training error
 switch indicator

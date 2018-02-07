@@ -249,6 +249,7 @@ for k = 1:niter
     loss1(k) = gamma4/2*norm(V4-y_one_hot,'fro')^2;
     loss2(k) = loss1(k)+rho1/2*norm(W1*x_train+b1-U1,'fro')^2+rho2/2*norm(W2*V1+b2-U2,'fro')^2+rho3/2*norm(W3*V2+b3-U3,'fro')^2+rho4/2*norm(W4*V3+b4-U4,'fro')^2;
     loss2(k) = loss2(k)+gamma1/2*norm(V1-max(U1,0),'fro')^2+gamma2/2*norm(V2-max(U2,0),'fro')^2+gamma3/2*norm(V3-max(U3,0),'fro')^2+gamma4/2*norm(V4-U4,'fro')^2;
+
 %     layer1(k) = norm(W1-W10,'fro')/norm(W10,'fro');
 %     layer2(k) = norm(W2-W20,'fro')/norm(W20,'fro');
 %     layer3(k) = norm(W3-W30,'fro')/norm(W30,'fro');

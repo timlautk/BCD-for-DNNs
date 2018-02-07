@@ -1,4 +1,5 @@
 %% Block Coordinate Descent (BCD) Algorithm for Training DNNs (3-layer MLP) (MNIST dataset)
+%%% 5 runs, seed = 10, 20, 30, 40, 50; validation accuracies: 0.9565, 0.9559, 0.9568, 0.9546, 0.9537
 clear all
 close all
 clc
@@ -8,7 +9,7 @@ addpath Algorithms Tools
 disp("MLP with Three Hidden Layers using the MNIST dataset (Jinshan's Algorithm)")
 
 rng('default');
-seed = 10;
+seed = 30;
 rng(seed);
 fprintf('Seed = %d \n', seed)
 
@@ -115,7 +116,7 @@ switch indicator
 end
 
 % lambda = 0;
-gamma = 0.5; 
+gamma = 1; 
 gamma1 = gamma; gamma2 = gamma; gamma3 = gamma; gamma4 = gamma;
 
 rho = gamma;
@@ -136,7 +137,7 @@ alpha8 = alpha; % alpha9 = alpha; alpha10 = alpha;
 % t = 0.1;
 
 % niter = input('Number of iterations: ');
-niter = 20;
+niter = 10;
 loss1 = zeros(niter,1);
 loss2 = zeros(niter,1);
 accuracy_train = zeros(niter,1);
@@ -256,7 +257,7 @@ set(graph1,'LineWidth',1.5);
 legend('Squared loss','Total loss');
 ylabel('Loss')
 xlabel('Epochs')
-title('Three-layer MLP (MNIST)')
+title('Three-layer MLP')
 
 figure;
 graph2 = semilogy(1:niter,accuracy_train,1:niter,accuracy_test);
@@ -265,7 +266,7 @@ set(graph2,'LineWidth',1.5);
 legend('Training accuracy','Validation accuracy','Location','southeast');
 ylabel('Accuracy')
 xlabel('Epochs')
-title('Three-layer MLP (MNIST)')
+title('Three-layer MLP')
 
 %% Training error
 switch indicator

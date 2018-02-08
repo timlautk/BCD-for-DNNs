@@ -160,48 +160,49 @@ for k = 1:niter
     W10 = W1; W20 = W2; W30 = W3; W40 = W4;
     b10 = b1; b20 = b2; b30 = b3; b40 = b4;
     
-    % update V4
-    V4 = (y_one_hot + gamma4*U4 + alpha1*V4)/(1+gamma4+alpha1);
-    
-    % update U4 
-    U4 = (gamma4*V4+rho4*(W4*V3+b4))/(gamma4+rho4);
-    
-    % update W4 and b4
-    [W4,b4] = updateWb_js(U4,V3,W4,b4,alpha2,rho4);
-%     [W4,b4] = updateWb_js_2(U4,V3,W4,b4);
-    
-    % update V3
-    V3 = updateV_js(U3,U4,W4,b4,rho4,gamma3,indicator);
-    
-    % update U3
-    U3 = relu_prox(V3,(rho3*(W3*V2+b3)+alpha3*U3)/(rho3+alpha3),(rho3+alpha3)/gamma3,d3,N);
-%     U3 = relu_prox2(V3,(rho3*(W3*V2+b3)+alpha3*U3)/(rho3+alpha3),(rho3+alpha3)/gamma3,d3,N);
-    
-    % update W3 and b3
-    [W3,b3] = updateWb_js(U3,V2,W3,b3,alpha4,rho3);
-%     [W3,b3] = updateWb_js_2(U3,V2,W3,b3);
-    
-    % update V2
-    V2 = updateV_js(U2,U3,W3,b3,rho3,gamma2,indicator);
-    
-    % update U2
-    U2 = relu_prox(V2,(rho2*(W2*V1+b2)+alpha5*U2)/(rho2+alpha5),(rho2+alpha5)/gamma2,d2,N);
-%     U2 = relu_prox2(V2,(rho2*(W2*V1+b2)+alpha5*U2)/(rho2+alpha5),(rho2+alpha5)/gamma2,d2,N);
-    
-    % update W2 and b2
-    [W2,b2] = updateWb_js(U2,V1,W2,b2,alpha6,rho2);
-%     [W2,b2] = updateWb_js_2(U2,V1,W2,b2);
-    
-    % update V1
-    V1 = updateV_js(U1,U2,W2,b2,rho2,gamma1,indicator);
+    % update W1 and b1
+    [W1,b1] = updateWb_js(U1,x_train,W1,b1,alpha8,rho1);
+%     [W1,b1] = updateWb_js_2(U1,x_train,W1,b1);
     
     % update U1
     U1 = relu_prox(V1,(rho1*(W1*x_train+b1)+alpha7*U1)/(rho1+alpha7),(rho1+alpha7)/gamma1,d1,N);
 %     U1 = relu_prox2(V1,(rho1*(W1*x_train+b1)+alpha7*U2)/(rho1+alpha7),(rho1+alpha7)/gamma1,d1,N);
 
-    % update W1 and b1
-    [W1,b1] = updateWb_js(U1,x_train,W1,b1,alpha8,rho1);
-%     [W1,b1] = updateWb_js_2(U1,x_train,W1,b1);
+    % update V1
+    V1 = updateV_js(U1,U2,W2,b2,rho2,gamma1,indicator);
+    
+    % update W2 and b2
+    [W2,b2] = updateWb_js(U2,V1,W2,b2,alpha6,rho2);
+%     [W2,b2] = updateWb_js_2(U2,V1,W2,b2);
+
+    % update U2
+    U2 = relu_prox(V2,(rho2*(W2*V1+b2)+alpha5*U2)/(rho2+alpha5),(rho2+alpha5)/gamma2,d2,N);
+%     U2 = relu_prox2(V2,(rho2*(W2*V1+b2)+alpha5*U2)/(rho2+alpha5),(rho2+alpha5)/gamma2,d2,N);
+
+    % update V2
+    V2 = updateV_js(U2,U3,W3,b3,rho3,gamma2,indicator);
+    
+    % update W3 and b3
+    [W3,b3] = updateWb_js(U3,V2,W3,b3,alpha4,rho3);
+%     [W3,b3] = updateWb_js_2(U3,V2,W3,b3);
+
+     % update U3
+    U3 = relu_prox(V3,(rho3*(W3*V2+b3)+alpha3*U3)/(rho3+alpha3),(rho3+alpha3)/gamma3,d3,N);
+%     U3 = relu_prox2(V3,(rho3*(W3*V2+b3)+alpha3*U3)/(rho3+alpha3),(rho3+alpha3)/gamma3,d3,N);
+
+    % update V3
+    V3 = updateV_js(U3,U4,W4,b4,rho4,gamma3,indicator);
+    
+    % update W4 and b4
+    [W4,b4] = updateWb_js(U4,V3,W4,b4,alpha2,rho4);
+%     [W4,b4] = updateWb_js_2(U4,V3,W4,b4);
+
+    % update U4 
+    U4 = (gamma4*V4+rho4*(W4*V3+b4))/(gamma4+rho4);
+
+    % update V4
+    V4 = (y_one_hot + gamma4*U4 + alpha1*V4)/(1+gamma4+alpha1);
+    
      
     % Training accuracy
     switch indicator

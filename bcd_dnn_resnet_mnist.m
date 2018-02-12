@@ -5,9 +5,12 @@ clc
 
 addpath Algorithms Tools
 
+disp('Three Hidden-Layer with Residual Connection using the MNIST dataset')
+
 rng('default');
-seed = 20;
+seed = 10;
 rng(seed);
+fprintf('Seed = %d \n', seed)
 
 % read in MNIST dataset into Matlab format if not exist
 if exist('mnist.mat', 'file')
@@ -117,21 +120,22 @@ u1 = zeros(d1,N); u2 = zeros(d2,N); u3 = zeros(d3,N); %u4 = zeros(d4,N);
 lambda = 0;
 gamma = 0.1; gamma1 = gamma; gamma2 = gamma; gamma3 = gamma; gamma4 = gamma; gammaL = gamma;
 % alpha1 = 10; 
-alpha1 = 1e-5; 
-alpha = 1e-4;
-alpha2 = alpha; alpha3 = alpha; alpha4 = alpha; 
-alpha5 = alpha; alpha6 = alpha; alpha7 = alpha; 
-alpha8 = alpha; alpha9 = alpha; alpha10 = alpha; 
-beta = 0.9;
+alpha1 = 1; 
+alphao = 5;
+alphae = 10;
+alpha2 = alphae; alpha3 = alphao; alpha4 = alphae; 
+alpha5 = alphao; alpha6 = alphae; alpha7 = alphao; 
+% alpha8 = alpha; alpha9 = alpha; alpha10 = alpha; 
+beta = 0.95;
 beta1 = beta; beta2 = beta; beta3 = beta; beta4 = beta; 
 beta5 = beta; beta6 = beta; beta7 = beta; 
-beta8 = beta; beta9 = beta; beta10 = beta; 
+% beta8 = beta; beta9 = beta; beta10 = beta; 
 
 t = 0.1;
 
 % s = 10; % number of mini-batches
 % niter = input('Number of iterations: ');
-niter = 10;
+niter = 20;
 loss1 = zeros(niter,1);
 loss2 = zeros(niter,1);
 accuracy_train = zeros(niter,1);
@@ -179,10 +183,10 @@ for k = 1:niter
 %     [W4,b4,beta3] = AdaptiveWb1_4(lambda,gamma4,a3,a4,W4,W4star,b4,b4star,u4,beta3,t);
     
     % update a3
-    a3star = updatea_2(a2,a3,y_one_hot,W3,V,b3,c,u3,zeros(dL,1),alpha4,gamma3,gammaL,indicator);
+    a3star = updatea_2(a2,a3,y_one_hot,W3,V,b3,c,u3,zeros(dL,1),alpha2,gamma3,gammaL,indicator);
 %     a3star = updatea_2(a2,a3,a4,W3,W4,b3,b4,u3,zeros(d4,1),alpha4,gamma3,gamma4,indicator);
     % adaptive momentum and update
-    [a3,beta4] = Adaptivea1_3(gamma3,gammaL,y_one_hot,a2,a3,a3star,W3,V,b3+u3,c,beta4,t);
+    [a3,beta2] = Adaptivea1_3(gamma3,gammaL,y_one_hot,a2,a3,a3star,W3,V,b3+u3,c,beta2,t);
 %     [a3,beta4] = Adaptivea1_3(gamma3,gamma4,a4,a2,a3,a3star,W3,W4,b3+u3,b4,beta4,t);
     
     % update u3
@@ -198,10 +202,10 @@ for k = 1:niter
 
     % update a2
 %     a2star = updatea_2(a1,a2,a3,W2,W3,b2,b3,u2,u3,alpha4,gamma2,gamma3,indicator);
-    a2star = updatea_2(a1,a2,a3,W2,W3,b2+x_train,b3,u2,u3,alpha6,gamma2,gamma3,indicator);
+    a2star = updatea_2(a1,a2,a3,W2,W3,b2+x_train,b3,u2,u3,alpha4,gamma2,gamma3,indicator);
     % adaptive momentum and update
 %     [a2,beta4] = Adaptivea1_3(gamma2,gamma3,a3,a1,a2,a2star,W2,W3,b2,b3,beta4,t);
-    [a2,beta6] = Adaptivea1_3(gamma2,gamma3,a3,a1,a2,a2star,W2,W3,b2+x_train+u2,b3+u3,beta6,t);
+    [a2,beta4] = Adaptivea1_3(gamma2,gamma3,a3,a1,a2,a2star,W2,W3,b2+x_train+u2,b3+u3,beta4,t);
     
     % update u2
 %     u2 = a2-W2*a1-b2;
@@ -209,26 +213,26 @@ for k = 1:niter
     
     % update W2 and b2 (2nd layer)
 %     [W2star,b2star] = updateWb_2(a2,a1,u2,W2,b2,alpha5,gamma2,lambda);
-    [W2star,b2star] = updateWb_ResNet(x_train,a2,a1,u2,W2,b2,alpha7,gamma2,lambda);
+    [W2star,b2star] = updateWb_ResNet(x_train,a2,a1,u2,W2,b2,alpha5,gamma2,lambda);
     % adaptive momentum and update
-    [W2,b2,beta7] = AdaptiveWb_ResNet(lambda,gamma2,x_train,a1,a2-u2,W2,W2star,b2,b2star,beta7,t);
+    [W2,b2,beta5] = AdaptiveWb_ResNet(lambda,gamma2,x_train,a1,a2-u2,W2,W2star,b2,b2star,beta5,t);
     
     
     % update a1
 %     a1star = updatea_2(x_train,a1,a2,W1,W2,b1,b2,u1,u2,alpha6,gamma1,gamma4,indicator);
-    a1star = updatea_2(x_train,a1,a2,W1,W2,b1,b2+x_train,u1,u2,alpha8,gamma1,gamma4,indicator);
+    a1star = updatea_2(x_train,a1,a2,W1,W2,b1,b2+x_train,u1,u2,alpha6,gamma1,gamma4,indicator);
     % adaptive momentum and update
 %     [a1,beta6] = Adaptivea1_3(gamma1,gamma4,a2,x_train,a1,a1star,W1,W2,b1,b2,beta6,t);
-    [a1,beta8] = Adaptivea1_3(gamma1,gamma4,a2,x_train,a1,a1star,W1,W2,b1+u1,b2+x_train+u2,beta8,t);
+    [a1,beta6] = Adaptivea1_3(gamma1,gamma4,a2,x_train,a1,a1star,W1,W2,b1+u1,b2+x_train+u2,beta6,t);
     
     % update u1
     u1 = a1-W1*x_train-b1;
 
     % update W1 and b1 (1st layer)
 %     [W1star,b1star] = updateWb(a1,x_train,W1,b1,alpha7,gamma1,lambda); 
-    [W1star,b1star] = updateWb_2(a1,x_train,u1,W1,b1,alpha9,gamma1,lambda);
+    [W1star,b1star] = updateWb_2(a1,x_train,u1,W1,b1,alpha7,gamma1,lambda);
     % adaptive momentum and update
-    [W1,b1,beta9] = AdaptiveWb1_4(lambda,gamma1,x_train,a1,W1,W1star,b1,b1star,u1,beta9,t);
+    [W1,b1,beta7] = AdaptiveWb1_4(lambda,gamma1,x_train,a1,W1,W1star,b1,b1star,u1,beta7,t);
     
     
     
@@ -325,7 +329,7 @@ title('Three-layer Fully-connected Network (2nd ResNet Hidden Layer)')
 figure;
 graph2 = semilogy(1:niter,accuracy_train,1:niter,accuracy_test);
 set(graph2,'LineWidth',1.5);
-legend('Training accuracy','Validation accuracy');
+legend('Training accuracy','Test accuracy','Location','southeast');
 ylabel('Accuracy')
 xlabel('Epochs')
 title('Three-layer Fully-connected Network (2nd ResNet Hidden Layer)')

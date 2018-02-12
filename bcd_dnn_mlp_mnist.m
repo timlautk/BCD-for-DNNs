@@ -5,9 +5,12 @@ clc
 
 addpath Algorithms Tools
 
+disp('MLP with Three Hidden Layers using the MNIST dataset')
+
 rng('default');
-seed = 20;
+seed = 10;
 rng(seed);
+fprintf('Seed = %d \n', seed)
 
 % read in MNIST dataset into Matlab format if not exist
 if exist('mnist.mat', 'file')
@@ -32,7 +35,7 @@ X = [y_train';x_train];
 [~,col] = find(X(1,:) < num_classes);
 X = X(:,col);
 [~,N] = size(X);
-X = X(:,randperm(N)); % shuffle the dataset
+X = X(:,randperm(N)); % shuffle the training dataset
 x_train = X(2:end,:);
 y_train = X(1,:)';
 clear X
@@ -51,7 +54,7 @@ X_test = [y_test';x_test];
 [~, col_test] = find(X_test(1,:) < num_classes);
 X_test = X_test(:,col_test);
 [~,N_test] = size(X_test);
-X_test = X_test(:,randperm(N_test,N_test));
+X_test = X_test(:,randperm(N_test,N_test)); % shuffle the test dataset
 x_test = X_test(2:end,:);
 y_test = X_test(1,:)';
 clear X_test
@@ -88,7 +91,6 @@ V = 0.01*randn(d4,d3); c = 0.1*ones(d4,1);
 
 indicator = 1; % 0 = sign; 1 = ReLU; 2 = tanh; 3 = sigmoid
 
-% a1 = zeros(d1,N); a2 = zeros(d2,N); a3 = zeros(d3,N);
 switch indicator
     case 0 % sign (binary)
         a1 = sign(W1*x_train+b1); a2 = sign(W2*a1+b2); a3 = sign(W3*a2+b3);  
@@ -103,22 +105,21 @@ a1star = zeros(d1,N); a2star = zeros(d2,N); a3star = zeros(d3,N);
 u1 = zeros(d1,N); u2 = zeros(d2,N); u3 = zeros(d3,N); 
 
 lambda = 0;
-gamma = 0.1; gamma1 = gamma; gamma2 = gamma; gamma3 = gamma; gamma4 = 0.1;
+gamma = 0.1; gamma1 = gamma; gamma2 = gamma; gamma3 = gamma; gamma4 = gamma;
 % alpha1 = 10; 
-alpha1 = 1e-3; 
-alpha = 1e-2;
+alpha1 = 1e-1; 
+alpha = 1e-1;
 alpha2 = alpha; alpha3 = alpha; alpha4 = alpha; 
 alpha5 = alpha; alpha6 = alpha; alpha7 = alpha; 
-alpha8 = alpha; alpha9 = alpha; alpha10 = alpha; 
+% alpha8 = alpha; alpha9 = alpha; alpha10 = alpha; 
 
-beta = 0.9;
+beta = 0.95;
 beta1 = beta; beta2 = beta; beta3 = beta; beta4 = beta; 
 beta5 = beta; beta6 = beta; beta7 = beta; 
-beta8 = beta; beta9 = beta; beta10 = beta; 
+% beta8 = beta; beta9 = beta; beta10 = beta; 
 
 t = 0.1;
 
-s = 10; % number of mini-batches
 % niter = input('Number of iterations: ');
 niter = 30;
 loss1 = zeros(niter,1);
@@ -165,7 +166,7 @@ for k = 1:niter
     % update W3 and b3 (3rd layer)
     [W3star,b3star] = updateWb_2(a3,a2,u3,W3,b3,alpha3,gamma3,lambda);
     % adaptive momentum and update
-    [W3,b3,beta3] = AdaptiveWb1_3(a2,a3,W3,W3star,b3,b3star,beta3,t);
+    [W3,b3,beta3] = AdaptiveWb1_3(lambda,gamma3,a2,a3,W3,W3star,b3,b3star,beta3,t);
     
     
     % update a2
@@ -180,7 +181,7 @@ for k = 1:niter
     % update W2 and b2 (2nd layer)
     [W2star,b2star] = updateWb_2(a2,a1,u2,W2,b2,alpha5,gamma2,lambda);
     % adaptive momentum and update
-    [W2,b2,beta5] = AdaptiveWb1_3(a1,a2,W2,W2star,b2,b2star,beta5,t);
+    [W2,b2,beta5] = AdaptiveWb1_3(lambda,gamma2,a1,a2,W2,W2star,b2,b2star,beta5,t);
     
     
     % update a1
@@ -194,7 +195,7 @@ for k = 1:niter
     % update W1 and b1 (1st layer)
     [W1star,b1star] = updateWb_2(a1,x_train,u1,W1,b1,alpha7,gamma1,lambda);
     % adaptive momentum and update
-    [W1,b1,beta7] = AdaptiveWb1_3(x_train,a1,W1,W1star,b1,b1star,beta7,t);
+    [W1,b1,beta7] = AdaptiveWb1_3(lambda,gamma1,x_train,a1,W1,W1star,b1,b1star,beta7,t);
      
     % Training accuracy
     switch indicator
@@ -242,13 +243,14 @@ for k = 1:niter
     end
     [~,pred_test] = max(V*a3_test+c,[],1);
     
-    time1(k) = toc;
+    
     loss1(k) = gamma4/2*norm(V*a3+c-y_one_hot,'fro')^2;
 %     loss1(k) = cross_entropy(y_one_hot,a1,V,c)+lambda*norm(V,'fro')^2;
     loss2(k) = loss1(k)+gamma1/2*norm(W1*x_train+b1-a1+u1,'fro')^2+gamma2/2*norm(W2*a1+b2-a2+u2,'fro')^2+gamma3/2*norm(W3*a2+b3-a3+u3,'fro')^2+lambda*(norm(W1,'fro')^2+norm(W2,'fro')^2+norm(W3,'fro')^2+norm(V,'fro')^2);
 %     loss1(k) = cross_entropy(y_one_hot,a1,W2,b2)+gamma1/2*norm(W1*x_train+b1-a1,'fro')^2;
     accuracy_train(k) = sum(pred'-1 == y_train)/N;
     accuracy_test(k) = sum(pred_test'-1 == y_test)/N_test;
+    time1(k) = toc;
     fprintf('epoch: %d, squared loss: %f, total loss: %f, training accuracy: %f, validation accuracy: %f, time: %f\n',k,loss1(k),loss2(k),accuracy_train(k),accuracy_test(k),time1(k));
   
 end
@@ -271,7 +273,8 @@ title('Three-layer MLP')
 figure;
 graph2 = semilogy(1:niter,accuracy_train,1:niter,accuracy_test);
 set(graph2,'LineWidth',1.5);
-legend('Training accuracy','Validation accuracy','Location','southeast');
+% ylim([0.85 1])
+legend('Training accuracy','Test accuracy','Location','southeast');
 ylabel('Accuracy')
 xlabel('Epochs')
 title('Three-layer MLP')

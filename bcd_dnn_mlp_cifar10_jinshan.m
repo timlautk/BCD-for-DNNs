@@ -276,53 +276,18 @@ for k = 1:niter
     loss1(k) = gamma4/2*norm(V4-y_one_hot,'fro')^2;
     loss2(k) = loss1(k)+rho1/2*norm(W1*x_train+b1-U1,'fro')^2+rho2/2*norm(W2*V1+b2-U2,'fro')^2+rho3/2*norm(W3*V2+b3-U3,'fro')^2+rho4/2*norm(W4*V3+b4-U4,'fro')^2;
     loss2(k) = loss2(k)+gamma1/2*norm(V1-max(U1,0),'fro')^2+gamma2/2*norm(V2-max(U2,0),'fro')^2+gamma3/2*norm(V3-max(U3,0),'fro')^2+gamma4/2*norm(V4-U4,'fro')^2;
-
-%     layer1(k) = norm(W1-W10,'fro')/norm(W10,'fro');
-%     layer2(k) = norm(W2-W20,'fro')/norm(W20,'fro');
-%     layer3(k) = norm(W3-W30,'fro')/norm(W30,'fro');
-%     layer4(k) = norm(W4-W40,'fro')/norm(W40,'fro');
-
-%     if k >1 
-%         layer1(k) = abs(loss2(k)-loss2(k-1))/norm(W1-W10,'fro');
-%         layer2(k) = abs(loss2(k)-loss2(k-1))/norm(W2-W20,'fro');
-%         layer3(k) = abs(loss2(k)-loss2(k-1))/norm(W3-W30,'fro');
-%         layer4(k) = abs(loss2(k)-loss2(k-1))/norm(W4-W40,'fro');
-%     else 
-%         layer1(k) = loss2(k)/norm(W1-W10,'fro');
-%         layer2(k) = loss2(k)/norm(W2-W20,'fro');
-%         layer3(k) = loss2(k)/norm(W3-W30,'fro');
-%         layer4(k) = loss2(k)/norm(W4-W40,'fro');
-%     end
-
-%     if k >1 
-%         layer1(k) = abs(loss2(k)-loss2(k-1))/norm(b1-b10);
-%         layer2(k) = abs(loss2(k)-loss2(k-1))/norm(b2-b20);
-%         layer3(k) = abs(loss2(k)-loss2(k-1))/norm(b3-b30);
-%         layer4(k) = abs(loss2(k)-loss2(k-1))/norm(b4-b40);
-%     else 
-%         layer1(k) = loss2(k)/norm(b1-b10);
-%         layer2(k) = loss2(k)/norm(b2-b20);
-%         layer3(k) = loss2(k)/norm(b2-b20);
-%         layer4(k) = loss2(k)/norm(b2-b20);
-%     end
  
-    % speed of learning (weight)
-    layer1(k) = norm(rho1*(W1*x_train+b1-U1)*x_train','fro');
-    layer2(k) = norm(rho2*(W2*V1+b2-U2)*V1','fro');
-    layer3(k) = norm(rho3*(W3*V2+b3-U3)*V2','fro');
-    layer4(k) = norm(rho4*(W4*V3+b4-U4)*V3','fro');
-    
-    % speed of learning (bias)
-    layer11(k) = norm(rho1*(N*b1+sum(W1*x_train-U1,2)));
-    layer21(k) = norm(rho2*(N*b2+sum(W2*V1-U2,2)));
-    layer31(k) = norm(rho3*(N*b3+sum(W3*V2-U3,2)));
-    layer41(k) = norm(rho4*(N*b4+sum(W4*V3-U4,2)));
-    
+    % speed of learning 
+    layer1(k) = norm(W1-W10,'fro');
+    layer2(k) = norm(W2-W20,'fro');
+    layer3(k) = norm(W3-W30,'fro');
+    layer4(k) = norm(W4-W40,'fro');
+        
     accuracy_train(k) = sum(pred'-1 == y_train)/N;
     accuracy_test(k) = sum(pred_test'-1 == y_test)/N_test;
     time1(k) = toc;
     fprintf('epoch: %d, squared loss: %f, total loss: %f, training accuracy: %f, validation accuracy: %f\n',k,loss1(k),loss2(k),accuracy_train(k),accuracy_test(k))
-    fprintf('speed of learning (W,b): HL1: %f, %f; HL2: %f, %f; HL3: %f, %f; OL: %f, %f; time: %f\n',layer1(k),layer11(k),layer2(k),layer21(k),layer3(k),layer31(k),layer4(k),layer41(k),time1(k))
+    fprintf('speed of learning: HL1: %f; HL2: %f; HL3: %f; OL: %f; time: %f\n',layer1(k),layer2(k),layer3(k),layer4(k),time1(k))
 end
 
 

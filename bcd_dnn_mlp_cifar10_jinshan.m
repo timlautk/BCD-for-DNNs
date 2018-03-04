@@ -321,18 +321,18 @@ graph3 = semilogy(1:niter,layer1,1:niter,layer2,1:niter,layer3,1:niter,layer4);
 set(graph3,'LineWidth',1.5);
 l3 = legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
 l3.Interpreter = 'latex';
-ylabel('$\nabla_{W^{k}}\bar{\mathcal{L}}$','interpreter','latex')
+ylabel('$\|W^{k}-W^{k-1}\|_F$','interpreter','latex')
 xlabel('Epochs','interpreter','latex')
 title('Speed of learning: Three-layer MLP','interpreter','latex')
 
-figure;
-graph4 = semilogy(1:niter,layer11,1:niter,layer21,1:niter,layer31,1:niter,layer41);
-set(graph4,'LineWidth',1.5);
-l4 = legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
-l4.Interpreter = 'latex';
-ylabel('$\nabla_{b^{k}}\bar{\mathcal{L}}$','interpreter','latex')
-xlabel('Epochs','interpreter','latex')
-title('Speed of learning: Three-layer MLP','interpreter','latex')
+% figure;
+% graph4 = semilogy(1:niter,layer11,1:niter,layer21,1:niter,layer31,1:niter,layer41);
+% set(graph4,'LineWidth',1.5);
+% l4 = legend('Hidden layer 1','Hidden layer 2','Hidden layer 3','Output layer','Location','northeast');
+% l4.Interpreter = 'latex';
+% ylabel('$\nabla_{b^{k}}\bar{\mathcal{L}}$','interpreter','latex')
+% xlabel('Epochs','interpreter','latex')
+% title('Speed of learning: Three-layer MLP','interpreter','latex')
 %% Training error
 switch indicator
     case 1 % ReLU

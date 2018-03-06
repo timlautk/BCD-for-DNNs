@@ -278,10 +278,15 @@ for k = 1:niter
     loss2(k) = loss2(k)+gamma1/2*norm(V1-max(U1,0),'fro')^2+gamma2/2*norm(V2-max(U2,0),'fro')^2+gamma3/2*norm(V3-max(U3,0),'fro')^2+gamma4/2*norm(V4-U4,'fro')^2;
  
     % speed of learning 
-    layer1(k) = norm(W1-W10,'fro');
-    layer2(k) = norm(W2-W20,'fro');
-    layer3(k) = norm(W3-W30,'fro');
-    layer4(k) = norm(W4-W40,'fro');
+%     layer1(k) = norm(W1-W10,'fro');
+%     layer2(k) = norm(W2-W20,'fro');
+%     layer3(k) = norm(W3-W30,'fro');
+%     layer4(k) = norm(W4-W40,'fro');
+    
+    layer1(k) = norm(W1-W10,'fro')/norm(W10,'fro');
+    layer2(k) = norm(W2-W20,'fro')/norm(W20,'fro');
+    layer3(k) = norm(W3-W30,'fro')/norm(W30,'fro');
+    layer4(k) = norm(W4-W40,'fro')/norm(W40,'fro');
         
     accuracy_train(k) = sum(pred'-1 == y_train)/N;
     accuracy_test(k) = sum(pred_test'-1 == y_test)/N_test;
